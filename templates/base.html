@@ -1,14 +1,18 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    
-    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/jquery/jquery.js') }}"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- <script type="text/javascript" src="{{ url_for('static', filename='jsmol/jquery/jquery.js') }}"></script> -->
+    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/JSmol.min.js') }}"></script>
+    <!-- <script type="text/javascript" src="{{ url_for('static', filename='jsmol/j2s/core/package.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmoljQueryExt.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmolCore.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmolApplet.js') }}"></script>
@@ -17,14 +21,30 @@
     <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/j2sjmol.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmol.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmolConsole.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmolMenu.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmolMenu.js') }}"></script> -->
+
+
+    <script type="text/javascript">
+        var Info = {
+            width: 300,
+            height: 300,
+            serverURL: "static/jsmol/php/jsmol.php",
+            use: "HTML5",
+            j2sPath: "static/jsmol/j2s/",
+            console: "jmolApplet0_infodiv"
+        };
+
+        
+    </script>
 
     <title>{{ head_title }}</title>
-  </head>
-  <body>
-      <div class="container-fluid">
+</head>
+
+<body>
+    <div class="container-fluid">
         {% block extra_content %}{% endblock %}
         {% block body %}{% endblock %}
-      </div>
-    </body>
+    </div>
+</body>
+
 </html>
