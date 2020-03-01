@@ -34,6 +34,17 @@ def spial():
     consensus_threshold = request.form["consensus_threshold"]
     specificty_threshold = request.form["specificty_threshold"]
 
+    conservation_dict1 = get_aa_conservation(alignment_a.filename)
+    conservation_dict2 = get_aa_conservation(alignment_b.filename)
+    sdp_dict = get_sdp(conservation_dict1,
+                       conservation_dict2,
+                       consensus_threshold,
+                       specificty_threshold)
+    print("**********************")
+    print("****sdp_dict***")
+    print(sdp_dict)
+    print("**********************")
+    
     return f"consensus: {consensus_threshold}, specificity: {specificty_threshold}"
 
 if __name__ == '__main__':

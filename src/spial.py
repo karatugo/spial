@@ -3,9 +3,9 @@ import os
 import json
 import re
 import operator
-from fasta_dict import *
+from .fasta_dict import *
 
-base_path = "/Users/aylin/Desktop/"
+base_path = "./uploaded-fa-files/"
 fasta_files_path = base_path 
 
 def get_aa_conservation(fasta_file):
