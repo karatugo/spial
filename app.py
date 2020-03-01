@@ -51,9 +51,9 @@ def index():
             query = db.select([calc]).where(calc.columns.pdb_filename == pdb_filename)
             ResultProxy = connection.execute(query)
             ResultSet = ResultProxy.fetchall()
-            sdp_dict = ResultSet[0]["sdp_dict"]
+            sdp_dict = ResultSet[-1]["sdp_dict"]
         except Exception as e:
-            return f"There was an issue adding your task: {e}"
+            return f"There was an issue adding to the DB: {e}"
 
     return render_template("index.html", 
                            head_title=head_title,
