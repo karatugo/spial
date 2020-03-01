@@ -36,9 +36,9 @@ class Calculation(db.Model):
 @app.route('/', methods=["POST", "GET"])
 def index():
     pdb_filename = None
+    sdp_dict = None
     if 'pdb_filename' in flask.session:
         pdb_filename = flask.session['pdb_filename']
-        sdp_dict = None
 
         try:
             engine = db.create_engine('sqlite:///test.db', {})
