@@ -3,8 +3,8 @@ from flask import Flask, redirect, render_template, request, session, url_for
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = "./uploaded-files"
-
+app.config['UPLOAD_FOLDER'] = "./uploaded-fa-files"
+app.config['PDB_UPLOAD_FOLDER'] = "./static/jsmol/data/"
 head_title = "Spial"
 
 
