@@ -33,8 +33,6 @@
             j2sPath: "static/jsmol/j2s/",
             console: "jmolApplet0_infodiv"
         };
-
-        
     </script>
 
     <title>{{ head_title }}</title>
@@ -46,26 +44,38 @@
             <div class="jumbotron">
                 <h3 class="display-4">{{ head_title }}</h3>
                 <p class="lead">Specificity in alignments</p>
-                <hr class="my-4"> 
-        
-                <form action="/movies" method="POST">
-                    <input class="btn btn-primary btn-lg" type="submit" value="JSMol">
-                </form>
+                <hr class="my-4">
+
+                <div class="form">
+                    <form action="/spial" method="POST" enctype="multipart/form-data">
+                        <label for="alignment_a">Upload Alignment A:</label>
+                        <input type="file" id="alignment_a" name="alignment_a"><br><br>
+                        <label for="alignment_a">Upload Alignment B:</label>
+                        <input type="file" id="alignment_b" name="alignment_b"><br><br>
+
+                        <label for="consensus_threshold">Consensus threshold:</label>
+                        <input type="number" id="consensus_threshold" name="consensus_threshold" min="0" max="1" step="0.01"><br><br>
+                        <label for="specificty_threshold">Specificity threshold:</label>
+                        <input type="number" id="specificty_threshold" name="specificty_threshold" min="0" max="1" step="0.01"><br><br>
+
+                        <input class="btn btn-primary btn-lg" type="submit" value="Run Spial">
+                    </form>
+                </div>
             </div>
         </div>
-        
-        
-            <script type="text/javascript">
-                jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
-                // Jmol.script(jmolApplet0, "background black;load $caffeine");
-                Jmol.script(jmolApplet0, "background black;load static/jsmol/data/5k5s.pdb");
-        
+
+
+        <script type="text/javascript">
+            jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
+            // Jmol.script(jmolApplet0, "background black;load $caffeine");
+            Jmol.script(jmolApplet0, "background black;load static/jsmol/data/5k5s.pdb");
+
                 // jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
                 // Jmol.script(jmolApplet0,"background black; load 1a0k.pdb; wireframe only; spin on")
-            </script>
-            <br>
-            <a href="javascript:Jmol.script(jmolApplet0,'spin on')">spin</a>
-            <a href="javascript:Jmol.script(jmolApplet0,'spin off')">off</a>
+        </script>
+        <br>
+        <a href="javascript:Jmol.script(jmolApplet0,'spin on')">spin</a>
+        <a href="javascript:Jmol.script(jmolApplet0,'spin off')">off</a>
     </div>
 </body>
 
