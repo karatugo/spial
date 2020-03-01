@@ -8,8 +8,6 @@ verify_ssl = true
 [packages]
 flask = "*"
 python-dotenv = "*"
-flask-session = "*"
-redis = "*"
 flask-sqlalchemy = "*"
 gunicorn = "*"
 
