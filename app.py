@@ -7,10 +7,10 @@ from werkzeug.utils import secure_filename
 from src.spial import get_aa_conservation, get_sdp
 
 app = Flask(__name__)
-load_dotenv()
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 db = SQLAlchemy(app)
 
+load_dotenv()
 app.secret_key = os.getenv("SECRET_KEY")
 app.config['UPLOAD_FOLDER'] = "./uploaded-fa-files"
 app.config['PDB_UPLOAD_FOLDER'] = "./static/jsmol/data/"
@@ -21,16 +21,15 @@ head_title = "Spial"
 
 class Calculation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    #conservation_dict1 = db.Column(db.String(200), nullable=False)
-    #conservation_dict2 = db.Column(db.String(200), nullable=False)
-    #consensus_threshold = db.Column(db.DECIMAL, nullable=False)
-    #specificty_threshold = db.Column(db.DECIMAL, nullable=False)
-    #sdp_dict = db.Column(db.Text, nullable=False)
+    conservation_dict1 = db.Column(db.String(200), nullable=False)
+    conservation_dict2 = db.Column(db.String(200), nullable=False)
+    consensus_threshold = db.Column(db.DECIMAL, nullable=False)
+    specificty_threshold = db.Column(db.DECIMAL, nullable=False)
+    sdp_dict = db.Column(db.Text, nullable=False)
     pdb_filename = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
-        return "<Task {}>".format(self.id)
-        # return f"<Task {self.id}>"
+        return "<Calculation {}>".format(self.id)
 
 
 @app.route('/', methods=["POST", "GET"])
@@ -79,13 +78,12 @@ def spial():
                        consensus_threshold,
                        specificty_threshold)
 
-    new_calc = Calculation(pdb_filename=pdb.filename)
-    # conservation_dict1=str(conservation_dict1),
-    #                        conservation_dict2=str(conservation_dict2),
-    #                        consensus_threshold=consensus_threshold,
-    #                        specificty_threshold=specificty_threshold,
-    #                        sdp_dict=str(sdp_dict),
-    #                        pdb_filename=pdb.filename)
+    new_calc = Calculation(conservation_dict1=str(conservation_dict1),
+                           conservation_dict2=str(conservation_dict2),
+                           consensus_threshold=consensus_threshold,
+                           specificty_threshold=specificty_threshold,
+                           sdp_dict=str(sdp_dict),
+                           pdb_filename=pdb.filename)
     try:
         db.session.add(new_calc)
         db.session.commit()
