@@ -45,7 +45,7 @@ def get_sdp(conservation_dict1,conservation_dict2,consensus_treshold,specificity
     specificity_treshold = float(specificity_treshold)
     #print(len(list(conservation_dict1.keys())))
     for position in range(0,len(list(conservation_dict1.keys()))):
-        sdp_dict[position] = {}
+        sdp_dict[str(position)] = {}
         aa1 = list(conservation_dict1[position].keys())[0]
         aa2 = list(conservation_dict2[position].keys())[0]
         score1 = conservation_dict1[position][aa1]
@@ -53,22 +53,20 @@ def get_sdp(conservation_dict1,conservation_dict2,consensus_treshold,specificity
        
         if aa1 == aa2:
             if score1 > consensus_treshold and score2 > consensus_treshold:
-                sdp_dict[position] = {aa1:{'score':score1,'type':'consensus'}}
+                sdp_dict[str(position)] = {aa1:{'score':score1,'type':'consensus'}}
             elif score1 < consensus_treshold and score2 < consensus_treshold:
-                sdp_dict[position] = {aa1:{'score':score1,'type':'non-specific'}}
+                sdp_dict[str(position)] = {aa1:{'score':score1,'type':'non-specific'}}
             elif score1 > consensus_treshold and score2 < consensus_treshold:
                 if score1 > specificity_treshold:
-                    sdp_dict[position] = {aa1:{'score':score1,'type':'specific'}}
+                    sdp_dict[str(position)] = {aa1:{'score':score1,'type':'specific'}}
                 else:
-                    sdp_dict[position] = {aa1:{'score':score1,'type':'non-specific'}}
+                    sdp_dict[str(position)] = {aa1:{'score':score1,'type':'non-specific'}}
         elif aa1 != aa2:
             if score1 > specificity_treshold and score2 > specificity_treshold:
-                sdp_dict[position] = {aa1:{'score':score1,'type':'separately specific'}}
+                sdp_dict[str(position)] = {aa1:{'score':score1,'type':'separately specific'}}
             elif score1 > specificity_treshold and score2 < specificity_treshold:
-                sdp_dict[position] = {aa1:{'score':score1,'type':'specific'}}
+                sdp_dict[str(position)] = {aa1:{'score':score1,'type':'specific'}}    
 
-           
-    #print(sdp_dict)
     return sdp_dict
 
 def dump_to_json(sdp_dict,json_file):

@@ -7,28 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <!-- <script type="text/javascript" src="{{ url_for('static', filename='jsmol/jquery/jquery.js') }}"></script> -->
     <script type="text/javascript" src="{{ url_for('static', filename='jsmol/JSmol.min.js') }}"></script>
-    <!-- <script type="text/javascript" src="{{ url_for('static', filename='jsmol/j2s/core/package.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmoljQueryExt.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmolCore.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmolApplet.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmolApi.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmolControls.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/j2sjmol.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmol.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmolConsole.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='jsmol/js/JSmolMenu.js') }}"></script> -->
+
 
 
     <script type="text/javascript">
         var Info = {
-            width: 300,
-            height: 300,
-            serverURL: "{{ url_for('static', filename='jsmol/php/jsmol.php') }}", // "static/jsmol/php/jsmol.php",
+            width: 1000,
+            height: 1000,
+            serverURL: "{{ url_for('static', filename='jsmol/php/jsmol.php') }}",
             use: "HTML5",
             j2sPath: "static/jsmol/j2s/",
             console: "jmolApplet0_infodiv"
@@ -70,12 +59,49 @@
         <script type="text/javascript">
             console.log("pdb_filename");
             console.log("{{ pdb_filename }}");
-            jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
-            // Jmol.script(jmolApplet0, "background black;load $caffeine");
-            Jmol.script(jmolApplet0, "background black;load static/jsmol/data/5k5s.pdb");
+            console.log("sdp_dict in JSON");
+            var obj = "{{ sdp_dict }}";
+            obj = JSON.parse(obj.replace(/&#39;/g, "'").replace(/'/g, '"'));
+            console.log(obj);
 
-                // jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
-                // Jmol.script(jmolApplet0,"background black; load 1a0k.pdb; wireframe only; spin on")
+            jmolStr = "";
+            var p = obj;
+            for (var key in p) {
+                if (p.hasOwnProperty(key)) {
+                    for (var key2 in p[key]) {
+                        data = p[key][key2]
+                        if (data.score > 0.9) {
+                            var num = Number(key) + 1;
+                            jmolStr += "select atomno=" +
+                                num.toString() +
+                                ";" + "spacefill 1.5;";
+
+                            if (data.type == "consensus") {
+                                jmolStr += "color pink;";
+                            } else if (data.type == "specific") {
+                                jmolStr += "color red;";
+                            } else if (data.type == "separately specific") {
+                                jmolStr += "color blue;";
+                            }
+                        }
+                    }
+                }
+            }
+
+            console.log(jmolStr);
+
+            jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
+            Jmol.script(jmolApplet0,
+                "background black;" +
+                "load static/jsmol/data/" + "{{ pdb_filename }};" +
+                "cartoon on;" +
+                "set solvent off;" +
+                "spacefill off;" +
+                "ribbons off;" +
+                "wireframe off;" +
+                jmolStr);
+            //"select atomno=1;spacefill 1.5;color red;" +
+            //"select atomno=15;spacefill 1.5;color blue;");
         </script>
         <br>
         <a href="javascript:Jmol.script(jmolApplet0,'spin on')">spin</a>

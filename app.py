@@ -17,6 +17,7 @@ app.config['PDB_UPLOAD_FOLDER'] = "./static/jsmol/data/"
 
 FA_EXTENSIONS = {"fa"}
 PDB_EXTENSIONS = {"pdb"}
+
 head_title = "Spial"
 
 class Calculation(db.Model):
@@ -25,7 +26,7 @@ class Calculation(db.Model):
     conservation_dict2 = db.Column(db.String(200), nullable=False)
     consensus_threshold = db.Column(db.DECIMAL, nullable=False)
     specificty_threshold = db.Column(db.DECIMAL, nullable=False)
-    sdp_dict = db.Column(db.Text, nullable=False)
+    sdp_dict = db.Column(db.JSON, nullable=False)
     pdb_filename = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
@@ -37,11 +38,27 @@ def index():
     pdb_filename = None
     if 'pdb_filename' in flask.session:
         pdb_filename = flask.session['pdb_filename']
+        sdp_dict = None
+
+        try:
+            engine = db.create_engine('sqlite:///test.db', {})
+            connection = engine.connect()
+            metadata = db.MetaData()
+            calc = db.Table('Calculation', 
+                            metadata, 
+                            autoload=True, 
+                            autoload_with=engine)
+            query = db.select([calc]).where(calc.columns.pdb_filename == pdb_filename)
+            ResultProxy = connection.execute(query)
+            ResultSet = ResultProxy.fetchall()
+            sdp_dict = ResultSet[0]["sdp_dict"]
+        except Exception as e:
+            return f"There was an issue adding your task: {e}"
 
     return render_template("index.html", 
                            head_title=head_title,
                            pdb_filename=pdb_filename,
-                           sdp_dict=None)
+                           sdp_dict=sdp_dict)
 
 def is_fa_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in FA_EXTENSIONS
@@ -55,7 +72,6 @@ def save_file_to_fs(upload_folder, f):
 
 @app.route('/spial', methods=["POST"])
 def spial():
-    session['key'] = 'value'
     alignment_a = request.files["alignment_a"]
     if alignment_a and is_fa_file(alignment_a.filename):
         save_file_to_fs(app.config['UPLOAD_FOLDER'], alignment_a)
@@ -87,13 +103,11 @@ def spial():
     try:
         db.session.add(new_calc)
         db.session.commit()
-        return redirect("/")
     except Exception as e:
         return f"There was an issue adding your task: {e}"
 
-
     flask.session["pdb_filename"] = pdb.filename
-    return flask.redirect("/")
+    return redirect("/")
 
 if __name__ == '__main__':
     app.run(debug=True)
