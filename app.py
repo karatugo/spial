@@ -1,6 +1,7 @@
 import os
 from flask import Flask, redirect, render_template, request, session, url_for
 from werkzeug.utils import secure_filename
+from src.spial import get_aa_conservation, get_sdp
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "./uploaded-fa-files"
