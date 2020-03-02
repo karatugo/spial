@@ -3,12 +3,12 @@ import os
 import json
 import re
 import operator
-from .fasta_dict import *
+from fasta_dict import *
 
-base_path = "./uploaded-fa-files/"
+base_path = "/Users/aylin/Desktop/"
 fasta_files_path = base_path 
 
-def get_aa_conservation(fasta_file):
+def get_aa_count(fasta_file):
     aa_count_dict = {}
     fasta_dict = get_fasta_dict(base_path,fasta_file)
     length = len(fasta_dict[list(fasta_dict.keys())[0]])
@@ -28,8 +28,11 @@ def get_aa_conservation(fasta_file):
               
         #print(i)
         i += 1
-    #print(aa_count_dict)
+    return aa_count_dict
+
+def get_aa_conservation(aa_count_dict,fasta_file):
     conservation_dict = {}
+    fasta_dict = get_fasta_dict(base_path,fasta_file)
     for position, counts in aa_count_dict.items():
         conservation_dict[position] = {}
         raw_length = float(len(fasta_dict.keys()))
@@ -39,34 +42,23 @@ def get_aa_conservation(fasta_file):
     #print(conservation_dict)
     return conservation_dict
 
-def get_sdp(conservation_dict1,conservation_dict2,consensus_treshold,specificity_treshold):
+def get_sdp(conservation_dict1,conservation_dict2):
     sdp_dict = {}
-    consensus_treshold = float(consensus_treshold)
-    specificity_treshold = float(specificity_treshold)
+    #consensus_treshold = float(consensus_treshold)
+    #specificity_treshold = float(specificity_treshold)
     #print(len(list(conservation_dict1.keys())))
     for position in range(0,len(list(conservation_dict1.keys()))):
-        sdp_dict[str(position)] = {}
+        sdp_dict[position+1] = {}
         aa1 = list(conservation_dict1[position].keys())[0]
         aa2 = list(conservation_dict2[position].keys())[0]
         score1 = conservation_dict1[position][aa1]
         score2 = conservation_dict2[position][aa2]
-       
-        if aa1 == aa2:
-            if score1 > consensus_treshold and score2 > consensus_treshold:
-                sdp_dict[str(position)] = {aa1:{'score':score1,'type':'consensus'}}
-            elif score1 < consensus_treshold and score2 < consensus_treshold:
-                sdp_dict[str(position)] = {aa1:{'score':score1,'type':'non-specific'}}
-            elif score1 > consensus_treshold and score2 < consensus_treshold:
-                if score1 > specificity_treshold:
-                    sdp_dict[str(position)] = {aa1:{'score':score1,'type':'specific'}}
-                else:
-                    sdp_dict[str(position)] = {aa1:{'score':score1,'type':'non-specific'}}
-        elif aa1 != aa2:
-            if score1 > specificity_treshold and score2 > specificity_treshold:
-                sdp_dict[str(position)] = {aa1:{'score':score1,'type':'separately specific'}}
-            elif score1 > specificity_treshold and score2 < specificity_treshold:
-                sdp_dict[str(position)] = {aa1:{'score':score1,'type':'specific'}}    
 
+        sdp_dict[position+1] = {'align_1':
+        {aa1:{'score_1':score1}},'align_2':{aa2:{'score_2':score2}}}
+
+           
+    print(sdp_dict)
     return sdp_dict
 
 def dump_to_json(sdp_dict,json_file):
@@ -78,9 +70,11 @@ def dump_to_json(sdp_dict,json_file):
 if __name__ == "__main__":
     fasta_file1= sys.argv[1] 
     fasta_file2 = sys.argv[2] 
-    consensus_treshold = sys.argv[3]
-    specificity_treshold = sys.argv[4]
-    conservation_dict1 = get_aa_conservation(fasta_file1)
-    conservation_dict2 = get_aa_conservation(fasta_file2)
-    sdp_dict = get_sdp(conservation_dict1,conservation_dict2,consensus_treshold,specificity_treshold)
+    #consensus_treshold = sys.argv[3]
+    #specificity_treshold = sys.argv[4]
+    aa_count_dict_1 = get_aa_count(fasta_file1)
+    aa_count_dict_2 = get_aa_count(fasta_file2)
+    conservation_dict1 = get_aa_conservation(aa_count_dict_1, fasta_file1)
+    conservation_dict2 = get_aa_conservation(aa_count_dict_2, fasta_file2)
+    sdp_dict = get_sdp(conservation_dict1,conservation_dict2)
     dump_to_json(sdp_dict,"sdp.json")
