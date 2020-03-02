@@ -90,9 +90,7 @@ def spial():
     conservation_dict1 = get_aa_conservation(alignment_a.filename)
     conservation_dict2 = get_aa_conservation(alignment_b.filename)
     sdp_dict = get_sdp(conservation_dict1,
-                       conservation_dict2,
-                       consensus_threshold,
-                       specificty_threshold)
+                       conservation_dict2)
 
     new_calc = Calculation(conservation_dict1=str(conservation_dict1),
                            conservation_dict2=str(conservation_dict2),
