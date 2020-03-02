@@ -72,7 +72,12 @@ def save_file_to_fs(upload_folder, f):
 
 @app.route('/spial', methods=["POST"])
 def spial():
+    print("******************************************")
     alignment_a = request.files["alignment_a"]
+    print("0000000000000000000000")
+    print(alignment_a)
+    print("0000000000000000000000")
+
     if alignment_a and is_fa_file(alignment_a.filename):
         save_file_to_fs(app.config['UPLOAD_FOLDER'], alignment_a)
 
@@ -108,6 +113,10 @@ def spial():
 
     flask.session["pdb_filename"] = pdb.filename
     return redirect("/")
+
+@app.route('/test', methods=["POST"])
+def test():
+    return "asd success"
 
 if __name__ == '__main__':
     app.run(debug=True)
