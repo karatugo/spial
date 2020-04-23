@@ -1,7 +1,14 @@
 import flask
 import os
 from dotenv import load_dotenv
-from flask import Flask, redirect, render_template, request, session, url_for
+from flask import (
+    Flask, 
+    redirect, 
+    render_template, 
+    request, 
+    session, 
+    url_for
+)
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from src.spial import get_aa_conservation, get_sdp
@@ -108,6 +115,31 @@ def spial():
 
     flask.session["pdb_filename"] = pdb.filename
     return redirect("/")
+
+@app.route('/covid-19', methods=["POST", "GET"])
+def covid_19():
+    if flask.request.method == 'POST':
+        pdb = request.files["pdb"]
+        if pdb and is_pdb_file(pdb.filename):
+            save_file_to_fs(app.config['PDB_UPLOAD_FOLDER'], pdb)
+
+        score = request.form["score"]
+        aa_position = request.form["aa_position"]
+        flask.session["pdb_filename"] = pdb.filename
+        flask.session["score"] = score
+        flask.session["aa_position"] = aa_position
+        
+        return redirect("/covid-19")
+    else:
+        pdb_filename = flask.session['pdb_filename'] if 'pdb_filename' in flask.session else None
+        score = flask.session['score'] if 'score' in flask.session else None
+        aa_position = flask.session['aa_position'] if 'aa_position' in flask.session else None
+        
+        return render_template("covid-19.html", 
+                               head_title="Covid-19",
+                               pdb_filename=pdb_filename,
+                               score=score,
+                               aa_position=aa_position)
 
 if __name__ == '__main__':
     app.run(debug=True)
